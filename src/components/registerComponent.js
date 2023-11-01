@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 function Register() {
@@ -8,6 +8,8 @@ function Register() {
         email: "",
         password: ""
     });
+
+    const navigate = useNavigate();
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -21,7 +23,7 @@ function Register() {
             username: userData.username,
             email: userData.email,
             password: userData.password,
-            token: ''
+            token: false
         }
 
         try {
@@ -35,13 +37,16 @@ function Register() {
 
             if (response.ok) {
                 console.log("registration successful");
+                
+                // redirect to /home page
+                navigate("/home");
             }
             else {
                 console.error("registration failed");
             }
         }
         catch(error) {
-            console.error(`call to API failed ${error}`);
+            console.error(`call to API failed: ${error}`);
         }
     }
 
@@ -76,8 +81,8 @@ function Register() {
                 onChange={handleInputChange}
               />
             </div>
-            <button type="submit">Register</button>
-            <Link to='/login'>already have an account?</Link>
+            <button type="submit">REGISTER</button>
+            <Link id="already-have-account" to='/login'>already have an account?</Link>
           </form>
         </div>
       );
