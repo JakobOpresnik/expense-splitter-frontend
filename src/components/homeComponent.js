@@ -21,7 +21,7 @@ function Home() {
 
         getCurrentUser();
         
-    }, []); // ensure this API endpoint is only called once
+    }, [currentUser]); // ensure this API endpoint is only called once
  
     return (
         <div>

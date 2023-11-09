@@ -70,6 +70,13 @@ function Groups() {
         }
     }
 
+    const handleEventLeave = async (groupId) => {
+        // TODO:
+        // - get current user
+        // - remove current user from array of users of clicked group (find by groupId)
+        // - create separate API endpoints to handle adding/removing users & purchases (instead of just having 1 update endpoint)
+    }
+
     const handleEventSelection = async (groupId) => {
         navigate(`/groups/${groupId}`);
     }
@@ -86,6 +93,7 @@ function Groups() {
 
             if (response.ok) {
                 const data = await response.json();
+                console.log(data);
                 setGroups(data);
             }
             else {
@@ -97,35 +105,37 @@ function Groups() {
         }
     }
 
-    const getCurrentUser = async () => {
-        try {
-            const response = await fetch("http://localhost:9000/users/current", {
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-            });
-            if (response.ok) {
-                const data = await response.json();
-                console.log(data);
-                setCurrentUserId(data._id);
-                const filteredGroups = groups.filter(group => group.users[0] == currentUserId);
-                setMyGroups(filteredGroups);
-                console.log(myGroups);
-            }
-            else {
-                console.error("failed to fetch data");
-            }
-        }
-        catch(error) {
-            console.error(`call to API failed: ${error}`);
-        }
-    }
 
     useEffect(() => {
+        const getCurrentUser = async () => {
+            try {
+                const response = await fetch("http://localhost:9000/users/current", {
+                    method: "GET",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data);
+                    setCurrentUserId(data._id);
+                    console.log(groups);
+                    const filteredGroups = groups.filter(group => group.users[0] === currentUserId);
+                    setMyGroups(filteredGroups);
+                    console.log(myGroups);
+                }
+                else {
+                    console.error("failed to fetch data");
+                }
+            }
+            catch(error) {
+                console.error(`call to API failed: ${error}`);
+            }
+        }
+
         getGroups();
         getCurrentUser();
-    }, []);
+    }, [currentUserId, groups, myGroups]);
 
 
     return (
@@ -139,6 +149,7 @@ function Groups() {
                         <h3>{group.name}</h3>
                         <h4>max {group.people} people</h4>
                         <button onClick={() => handleEventJoin(group._id)}>JOIN</button>
+                        <button onClick={() => handleEventLeave(group._id)}>LEAVE</button>
                     </div>
                 ))}
             </div>

@@ -39,7 +39,7 @@ function Register() {
                 console.log("registration successful");
                 
                 // redirect to /home page
-                navigate("/home");
+                navigate("/login");
             }
             else {
                 console.error("registration failed");

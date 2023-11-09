@@ -12,6 +12,7 @@ function PurchaseEntry() {
     });
 
     const [purchaseId, setPurchaseId] = useState();
+    const [user, setUser] = useState();
 
     const navigate = useNavigate();
 
@@ -25,51 +26,70 @@ function PurchaseEntry() {
     const handleNewPurchase = async (e) => {
         e.preventDefault();
 
-        const createPurchaseData = {
-            id: Math.floor(Math.random * 1000),
-            name: purchaseData.name,
-            cost: purchaseData.cost,
-            user: purchaseData.user,
-        }
-
         try {
-            const response = await fetch("http://localhost:9000/purchases", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(createPurchaseData)
-            });
+            const response = await fetch("http://localhost:9000/users/current");
 
             if (response.ok) {
-                console.log("new purchase created");
+                const data = await response.json();
+                setUser(data);
+                console.log(user);
 
-                const response = await fetch("")
-
-                const updatedGroupData = {
-                    purchases: createPurchaseData.id
+                const createPurchaseData = {
+                    name: purchaseData.name,
+                    cost: purchaseData.cost,
+                    user: user._id,
+                    group: params.id
                 }
-                
+
                 try {
-                    const response = await fetch(`http://localhost:9000/groups/${params.id}`, {
-                        method: "PUT",
+                    const response = await fetch("http://localhost:9000/purchases", {
+                        method: "POST",
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(updatedGroupData)
-                    })
+                        body: JSON.stringify(createPurchaseData)
+                    });
+
                     if (response.ok) {
-                        console.log("purchase successfully added to event");
-                    }
-                    else {
-                        console.error("failed to add purchase to event");
+                        console.log("new purchase created");
+
+                        const purchaseData = await response.json()
+                        console.log(purchaseData._id)
+
+                        const updatedGroupData = {
+                            purchases: purchaseData._id
+                        }
+
+                        //console.log(createPurchaseData.id)
+
+                        try {
+                            const response = await fetch(`http://localhost:9000/groups/${params.id}`, {
+                                method: "PUT",
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(updatedGroupData)
+                            })
+                            if (response.ok) {
+                                console.log("purchase successfully added to event");
+                            }
+                            else {
+                                console.error("failed to add purchase to event");
+                            }
+                        }
+                        catch(error) {
+                            console.error(`call to API failed: ${error}`);
+                        }
+                        
+                        window.history.back();
                     }
                 }
                 catch(error) {
                     console.error(`call to API failed: ${error}`);
                 }
-                
-                window.history.back();
+            }
+            else {
+                console.error("error getting currently logged-in user");
             }
         }
         catch(error) {
