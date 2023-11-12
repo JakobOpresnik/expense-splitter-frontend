@@ -143,7 +143,7 @@ function Groups() {
             <Header />
             <button onClick={handleRedirect}>ADD EVENT</button>
             <h2>ALL CURRENTLY AVAILABLE EVENTS</h2>
-            <div>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
                 {groups.map(group => (
                     <div class="event-info" key={group._id} onClick={() => handleEventSelection(group._id)}>
                         <h3>{group.name}</h3>

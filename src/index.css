@@ -79,6 +79,11 @@ footer {
   width: 200px;
 }
 
+div {
+  display: 'flex';
+  flex-direction: 'row';
+}
+
 /* .link {
   color: #000000;
   font-size: 15px;
