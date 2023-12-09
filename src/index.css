@@ -80,8 +80,14 @@ footer {
   width: 200px;
 }
 
+<<<<<<< HEAD
 .listing {
   display: flex;
+=======
+div {
+  display: 'flex';
+  flex-direction: 'row';
+>>>>>>> a8f2368a2e8941ac4f0cb4ecda29f50e31708c35
 }
 
 /* .link {

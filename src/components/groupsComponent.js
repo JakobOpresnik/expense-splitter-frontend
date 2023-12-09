@@ -129,6 +129,7 @@ function Groups() {
     console.log(myGroups);
     
     return (
+<<<<<<< HEAD
         <>
             {!loadingGroups && currentUser && groups && myGroups && (
                 <div>
@@ -138,6 +139,28 @@ function Groups() {
                     <div class="listing">
                         {groups.map(group => (
                             <div class="event-info" key={group._id}>
+=======
+        <div>
+            <Header />
+            <button onClick={handleRedirect}>ADD EVENT</button>
+            <h2>ALL CURRENTLY AVAILABLE EVENTS</h2>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                {groups.map(group => (
+                    <div class="event-info" key={group._id} onClick={() => handleEventSelection(group._id)}>
+                        <h3>{group.name}</h3>
+                        <h4>max {group.people} people</h4>
+                        <button onClick={() => handleEventJoin(group._id)}>JOIN</button>
+                        <button onClick={() => handleEventLeave(group._id)}>LEAVE</button>
+                    </div>
+                ))}
+            </div>
+            <h2>YOUR EVENTS</h2>
+            <div>
+                {/* {groups.map(group => {
+                    if (group.users.includes(currentUserId)) {
+                        return (
+                            <div class="my-event-info">
+>>>>>>> a8f2368a2e8941ac4f0cb4ecda29f50e31708c35
                                 <h3>{group.name}</h3>
                                 <h4>max {group.people} people</h4>
                                 {joinGroup && (
