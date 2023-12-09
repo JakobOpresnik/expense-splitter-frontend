@@ -93,18 +93,18 @@ function Group() {
             <Header />
             <h1>hello</h1>
             <h3>{group.name}</h3>
-            <h3>{group.people}</h3>
+            <h3>max people: {group.people}</h3>
             <h3>Purchases:</h3>
-            <h3>
+            <div class="listing">
                 { purchases.length ? 
                     purchases.map(purchase => (
                     <div class="purchase-info" key={purchase._id}>
                         <h3>{purchase.name}</h3>
-                        <h4>{purchase.cost}€</h4>
+                        <h4>price: {purchase.cost}€</h4>
                         <h4>done by: {purchase.user.username}</h4>
                     </div>
                 )) : "" }
-            </h3>
+            </div>
             <button onClick={handleRedirect}>ADD PURCHASE</button>
             <Footer />
         </div>

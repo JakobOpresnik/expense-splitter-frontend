@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../App";
 
 
 function Profile() {
 
-    const [currentUser, setCurrentUser] = useState({});
-
+    const [purchases, setPurchases] = useState([]);
+    const { currentUser } = useContext(UserContext);
     const navigate = useNavigate();
+
+    console.log(currentUser);
 
     const handleLogout = async () => {
         try {
@@ -23,29 +26,40 @@ function Profile() {
         }
     }
 
-    useEffect(() => {
-
-        async function getCurrentUser() {
-            try {
-                const response = await fetch("http://localhost:9000/users/current");
+    const getUserPurchases = async () => {
+        try {
+            const response = await fetch(`http://localhost:9000/purchases/user/${currentUser._id}`, {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+            if (response.ok) {
                 const data = await response.json();
-                setCurrentUser(data);
+                setPurchases(data);
+                console.log("user purchases successfully fetched");
             }
-            catch(error) {
-                console.log(`call to API failed: ${error}`);
+            else {
+                console.error("error fetching user purchases");
             }
         }
+        catch(error) {
+            console.error(`call to API failed: ${error}`);
+        }
+    }
 
-        getCurrentUser();
-        
-    }, []); // ensure this API endpoint is only called once
+    console.log("purchases: ", purchases);
 
     return (
         <div>
-            <h2>{currentUser.username}</h2>
-            <p>{currentUser.email}</p>
-            <p>Your current balance: {currentUser.balance}€</p>
-            <button onClick={handleLogout}>LOGOUT</button>
+            {currentUser && (
+                <>
+                    <h2>{currentUser.username}</h2>
+                    <p>{currentUser.email}</p>
+                    <p>Your current balance: {currentUser.balance}€</p>
+                    <button onClick={handleLogout}>LOGOUT</button>
+                </>
+            )}
         </div>
     )
 }

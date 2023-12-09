@@ -1,9 +1,12 @@
 import Header from "./headerComponent";
 import Footer from "./footerComponent";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { UserContext } from "../App";
 
 function PurchaseEntry() {
+
+    const { currentUser } = useContext(UserContext);
 
     const [purchaseData, setPurchaseData] = useState({
         name: "",
@@ -26,70 +29,55 @@ function PurchaseEntry() {
     const handleNewPurchase = async (e) => {
         e.preventDefault();
 
+
+        const createPurchaseData = {
+            name: purchaseData.name,
+            cost: purchaseData.cost,
+            user: currentUser._id,
+            group: params.id
+        }
+
         try {
-            const response = await fetch("http://localhost:9000/users/current");
+            const response = await fetch("http://localhost:9000/purchases", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(createPurchaseData)
+            });
 
             if (response.ok) {
-                const data = await response.json();
-                setUser(data);
-                console.log(user);
+                console.log("new purchase created");
 
-                const createPurchaseData = {
-                    name: purchaseData.name,
-                    cost: purchaseData.cost,
-                    user: user._id,
-                    group: params.id
+                const purchaseData = await response.json()
+                console.log(purchaseData._id)
+
+                const updatedGroupData = {
+                    purchases: purchaseData._id
                 }
 
+                //console.log(createPurchaseData.id)
+
                 try {
-                    const response = await fetch("http://localhost:9000/purchases", {
-                        method: "POST",
+                    const response = await fetch(`http://localhost:9000/groups/${params.id}`, {
+                        method: "PUT",
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify(createPurchaseData)
-                    });
-
+                        body: JSON.stringify(updatedGroupData)
+                    })
                     if (response.ok) {
-                        console.log("new purchase created");
-
-                        const purchaseData = await response.json()
-                        console.log(purchaseData._id)
-
-                        const updatedGroupData = {
-                            purchases: purchaseData._id
-                        }
-
-                        //console.log(createPurchaseData.id)
-
-                        try {
-                            const response = await fetch(`http://localhost:9000/groups/${params.id}`, {
-                                method: "PUT",
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(updatedGroupData)
-                            })
-                            if (response.ok) {
-                                console.log("purchase successfully added to event");
-                            }
-                            else {
-                                console.error("failed to add purchase to event");
-                            }
-                        }
-                        catch(error) {
-                            console.error(`call to API failed: ${error}`);
-                        }
-                        
-                        window.history.back();
+                        console.log("purchase successfully added to event");
+                    }
+                    else {
+                        console.error("failed to add purchase to event");
                     }
                 }
                 catch(error) {
                     console.error(`call to API failed: ${error}`);
                 }
-            }
-            else {
-                console.error("error getting currently logged-in user");
+                
+                window.history.back();
             }
         }
         catch(error) {

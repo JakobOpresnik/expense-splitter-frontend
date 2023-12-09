@@ -1,36 +1,21 @@
 import Header from "./headerComponent";
 import Footer from "./footerComponent";
-import { useEffect, useState } from "react";
+import { useContext } from "react";
+import { UserContext } from "../App";
 
 function Home() {
 
-    const [currentUser, setCurrentUser] = useState();
-
-    useEffect(() => {
-
-        async function getCurrentUser() {
-            try {
-                const response = await fetch("http://localhost:9000/users/current");
-                const data = await response.json();
-                setCurrentUser(data.username);
-            }
-            catch(error) {
-                console.error(`call to API failed: ${error}`);
-            }
-        }
-
-        getCurrentUser();
-        
-    }, [currentUser]); // ensure this API endpoint is only called once
+    const { currentUser } = useContext(UserContext);
+    //console.log(currentUser.username);
  
     return (
-        <div>
+        <>
             <Header />
             <h1 id="home-title">
-                Welcome to your dashboard, {currentUser}
+                Welcome to your dashboard, {currentUser.username}
             </h1>
             <Footer />
-        </div>
+        </>
     )
 }
 
