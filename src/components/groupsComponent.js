@@ -8,7 +8,7 @@ function Groups() {
 
     const [groups, setGroups] = useState([]);
     const [loadingGroups, setLoadingGroups] = useState(false);
-    const [joinGroup, setJoinGroup] = useState(false);
+    //const [joinGroup, setJoinGroup] = useState();
 
     const { currentUser } = useContext(UserContext);
     console.log(currentUser);
@@ -19,7 +19,7 @@ function Groups() {
         navigate("/groups/entry");
     }
 
-    const handleEventJoin = async (groupId) => {
+    /* const handleEventJoin = async (groupId) => {
         const updatedGroupData = {
             users: currentUser._id
         }
@@ -69,7 +69,7 @@ function Groups() {
         finally {
             setJoinGroup(false);
         }
-    }
+    } */
 
     const handleEventSelection = async (groupId) => {
         navigate(`/groups/${groupId}`);
@@ -104,66 +104,31 @@ function Groups() {
             }
         }
 
-        console.log("joined group: ", joinGroup);
-        const isGroupJoined = async (groupId) => {
-            try {
-                const response = await fetch(`http://localhost:9000/groups/${groupId}/hasUser/${currentUser._id}`)
-                console.log("has user", response);
-                if (response.ok) {
-                    setJoinGroup(true);
-                }
-                setJoinGroup(false);
-            }
-            catch(error) {
-                console.error(`couldn't fetch groups: ${error}`);
-            }
-        }
-
         getGroups();
-        isGroupJoined("6570cc5e5f43cc32058ee6cf");
-    }, [joinGroup]);
+    }, []);
 
-    const myGroups = groups.filter(group => {
+    /* const myGroups = groups.filter(group => {
         return group.users.some(user => user === currentUser._id)
     });
-    console.log(myGroups);
+    console.log(myGroups); */
+    console.log("groups", groups);
+    //console.log("current user", currentUser._id);
     
     return (
-<<<<<<< HEAD
         <>
-            {!loadingGroups && currentUser && groups && myGroups && (
+            {!loadingGroups && currentUser && groups && (
                 <div>
                     <Header />
                     <button onClick={handleRedirect}>ADD EVENT</button>
-                    <h2>ALL CURRENTLY AVAILABLE EVENTS</h2>
+                    <h2>ALL AVAILABLE EVENTS</h2>
                     <div class="listing">
-                        {groups.map(group => (
-                            <div class="event-info" key={group._id}>
-=======
-        <div>
-            <Header />
-            <button onClick={handleRedirect}>ADD EVENT</button>
-            <h2>ALL CURRENTLY AVAILABLE EVENTS</h2>
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-                {groups.map(group => (
-                    <div class="event-info" key={group._id} onClick={() => handleEventSelection(group._id)}>
-                        <h3>{group.name}</h3>
-                        <h4>max {group.people} people</h4>
-                        <button onClick={() => handleEventJoin(group._id)}>JOIN</button>
-                        <button onClick={() => handleEventLeave(group._id)}>LEAVE</button>
-                    </div>
-                ))}
-            </div>
-            <h2>YOUR EVENTS</h2>
-            <div>
-                {/* {groups.map(group => {
-                    if (group.users.includes(currentUserId)) {
+                    {groups.map(group => {
                         return (
-                            <div class="my-event-info">
->>>>>>> a8f2368a2e8941ac4f0cb4ecda29f50e31708c35
+                            <div class="event-info">
                                 <h3>{group.name}</h3>
                                 <h4>max {group.people} people</h4>
-                                {joinGroup && (
+                                <button onClick={() => handleEventSelection(group._id)}>VIEW</button>
+                                {/* {joinGroup && (
                                     <>
                                         <button onClick={() => handleEventSelection(group._id)}>VIEW</button>
                                         <button onClick={() => handleEventLeave(group._id)}>LEAVE</button>
@@ -173,19 +138,34 @@ function Groups() {
                                     <>
                                         <button onClick={() => handleEventJoin(group._id)}>JOIN</button>
                                     </>
-                                )}
-                                
+                                )} */}
                             </div>
-                        ))}
+                        )
+                    })}
                     </div>
                     <h2>YOUR EVENTS</h2>
                     <div class="listing">
-                        {myGroups.map(myGroup => (
-                            <div class="my-event-info" key={myGroup._id}>
-                                <h3>{myGroup.name}</h3>
-                                <h4>{myGroup.people}</h4>
-                            </div>
-                        ))}
+                        {groups.map(group => {
+                            if (group.users.includes(currentUser._id)) {
+                                return (
+                                    <div class="my-event-info">
+                                        <h3>{group.name}</h3>
+                                        <h4>max {group.people} people</h4>
+                                        {/* {joinGroup && (
+                                            <>
+                                                <button onClick={() => handleEventSelection(group._id)}>VIEW</button>
+                                                <button onClick={() => handleEventLeave(group._id)}>LEAVE</button>
+                                            </>
+                                        )}
+                                        {!joinGroup && (
+                                            <>
+                                                <button onClick={() => handleEventJoin(group._id)}>JOIN</button>
+                                            </>
+                                        )} */}
+                                    </div>
+                                )
+                            }
+                        })}
                     </div>
                     <Footer />
                 </div>

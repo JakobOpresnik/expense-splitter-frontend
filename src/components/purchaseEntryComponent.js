@@ -29,7 +29,6 @@ function PurchaseEntry() {
     const handleNewPurchase = async (e) => {
         e.preventDefault();
 
-
         const createPurchaseData = {
             name: purchaseData.name,
             cost: purchaseData.cost,
@@ -48,6 +47,32 @@ function PurchaseEntry() {
 
             if (response.ok) {
                 console.log("new purchase created");
+
+                // update user's balance based on the newly created purchase
+                currentUser.balance -= Number(createPurchaseData.cost);
+                console.log("user's new balance: ", currentUser.balance);
+                const newBalanceData = {
+                    balance: currentUser.balance,
+                };
+
+                try {
+                    const response = await fetch(`http://localhost:9000/users/${currentUser._id}`, {
+                        method: "PUT",
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(newBalanceData),
+                    });
+                    if (response.ok) {
+                        console.log("user's balance successfully updated");
+                    }
+                    else {
+                        console.error("balance update failed");
+                    }
+                }
+                catch(error) {
+                    console.error(`call to API failed: ${error}`);
+                }
 
                 const purchaseData = await response.json()
                 console.log(purchaseData._id)

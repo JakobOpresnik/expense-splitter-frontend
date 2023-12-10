@@ -11,9 +11,11 @@ function Home() {
     return (
         <>
             <Header />
-            <h1 id="home-title">
-                Welcome to your dashboard, {currentUser.username}
-            </h1>
+            { currentUser && (
+                <h1 id="home-title">
+                    Welcome to your dashboard, {currentUser.username}
+                </h1>
+            )}
             <Footer />
         </>
     )
