@@ -16,8 +16,8 @@ export const UserContext = createContext();
 
 function App() {
 
-  const [currentUser, setCurrentUser] = useState(null);
-  //const [currentUserName, setCurrentUserName] = useState();
+  const [currentUser, setCurrentUser] = useState({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
       async function getCurrentUser() {
@@ -25,17 +25,23 @@ function App() {
               const response = await fetch("http://localhost:9000/users/current");
               if (response.ok) {
                 const data = await response.json();
+                //setCurrentUser((prevUser) => ({ ...prevUser, ...data}));
                 setCurrentUser(data);
               }
-              //setCurrentUserName(data.username);
           }
           catch(error) {
               console.error(`call to API failed: ${error}`);
           }
+          finally {
+            setLoading(false);
+          }
       }
 
-      getCurrentUser();
-  }, []); // ensure this API endpoint is only called once
+      if (loading) {
+        getCurrentUser();
+      }
+
+  }, [loading]); // ensure this API endpoint is only called once
 
   return (
     <UserContext.Provider value={{

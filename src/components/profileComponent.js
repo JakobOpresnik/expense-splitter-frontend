@@ -1,13 +1,20 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
-
+import Header from "./headerComponent";
+import Footer from "./footerComponent";
 
 function Profile() {
 
     const [purchases, setPurchases] = useState([]);
+    const [editProfileMode, setEditProfileMode] = useState(false);
     const { currentUser } = useContext(UserContext);
     const navigate = useNavigate();
+
+    const [updatedUserData, setUpdatedUserData] = useState({
+        username: "",
+        password: "",
+    });
 
     console.log(currentUser);
 
@@ -26,7 +33,7 @@ function Profile() {
         }
     }
 
-    const getUserPurchases = async () => {
+    /* const getUserPurchases = async () => {
         try {
             const response = await fetch(`http://localhost:9000/purchases/user/${currentUser._id}`, {
                 method: "GET",
@@ -47,19 +54,88 @@ function Profile() {
             console.error(`call to API failed: ${error}`);
         }
     }
+    console.log("purchases: ", purchases); */
 
-    console.log("purchases: ", purchases);
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setUpdatedUserData({...updatedUserData, [name]: value});
+    }
+
+    const handleEditUser = async (e) => {{
+        e.preventDefault();
+
+        const updatedData = {
+            username: updatedUserData.username,
+            email: updatedUserData.email,
+        }
+
+        try {
+            const response = await fetch(`http://localhost:9000/users/${currentUser._id}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedData)
+            });
+
+            if (response.ok) {
+                console.log("user update successful");
+                setEditProfileMode(false);
+            }
+            else {
+                console.error("user update failed");
+            }
+        }
+        catch(error) {
+            console.error(`call to API failed: ${error}`);
+        }
+    }} 
+
+    const editProfile = async () => {
+        setEditProfileMode(true);
+    }
 
     return (
         <div>
+            <Header />
             {currentUser && (
                 <>
-                    <h2>{currentUser.username}</h2>
-                    <p>{currentUser.email}</p>
-                    <p>Your current balance: {currentUser.balance}€</p>
-                    <button onClick={handleLogout}>LOGOUT</button>
+                    {!editProfileMode ? (
+                        <div class="user-profile">
+                            <h2 id="user-name-title">{currentUser.username}</h2>
+                            <p>E-mail: <b>{currentUser.email}</b></p>
+                            <p>Your current balance: <b>{currentUser.balance}€</b></p>
+                            <button class="edit-profile-btn" onClick={editProfile}>EDIT PROFILE</button>
+                            <button class="logout-btn" onClick={handleLogout}>LOGOUT</button>
+                        </div>
+                    ) : (
+                        <form class="user-profile" onSubmit={handleEditUser}>
+                            <div>
+                            <label htmlFor="username">Username:</label>
+                            <input
+                                type="text"
+                                name="username"
+                                //value={updatedUserData.username}
+                                defaultValue={currentUser.username}
+                                onChange={handleInputChange}
+                            />
+                            </div>
+                            <div>
+                            <label htmlFor="email">Email:</label>
+                            <input
+                                type="email"
+                                name="email"
+                                //value={updatedUserData.email}
+                                defaultValue={currentUser.email}
+                                onChange={handleInputChange}
+                            />
+                            </div>
+                            <button class="update-profile-btn" type="submit">UPDATE USER</button>
+                        </form>
+                    )}
                 </>
             )}
+            <Footer />
         </div>
     )
 }

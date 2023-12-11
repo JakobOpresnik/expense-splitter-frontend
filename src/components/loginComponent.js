@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 function Login() {
     const [userData, setUserData] = useState({
         username: "",
-        password: ""
+        password: "",
     });
 
     const navigate = useNavigate();
@@ -47,12 +47,13 @@ function Login() {
     }
 
     return (
-        <div>
-          <h2>User Login</h2>
+        <div class="login-div">
+          <h2 id="login-title">USER LOGIN</h2>
           <form onSubmit={handleSubmit}>
             <div>
               <label htmlFor="email">E-mail:</label>
               <input
+                class="email"
                 type="text"
                 name="email"
                 value={userData.email}
@@ -68,7 +69,7 @@ function Login() {
                 onChange={handleInputChange}
               />
             </div>
-            <button type="submit">LOGIN</button>
+            <button class="login-btn" type="submit">LOGIN</button>
             <Link id="no-account-yet" to="/">don't have an account yet?</Link>
           </form>
         </div>

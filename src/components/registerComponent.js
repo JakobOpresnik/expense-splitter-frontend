@@ -51,8 +51,8 @@ function Register() {
     }
 
     return (
-        <div>
-          <h2>User Registration</h2>
+        <div class="register-div">
+          <h2 id="register-title">USER REGISTRATION</h2>
           <form onSubmit={handleSubmit}>
             <div>
               <label htmlFor="username">Username:</label>
@@ -66,6 +66,7 @@ function Register() {
             <div>
               <label htmlFor="email">Email:</label>
               <input
+                class="email"
                 type="email"
                 name="email"
                 value={userData.email}
@@ -81,7 +82,7 @@ function Register() {
                 onChange={handleInputChange}
               />
             </div>
-            <button type="submit">REGISTER</button>
+            <button class="register-btn" type="submit">REGISTER</button>
             <Link id="already-have-account" to='/login'>already have an account?</Link>
           </form>
         </div>

@@ -113,28 +113,30 @@ function PurchaseEntry() {
     return (
         <div>
         <Header />
-        <h2>Create New Purchase</h2>
-        <form onSubmit={handleNewPurchase}>
-            <div>
-                <label htmlFor="name">Name:</label>
-                <input
-                    type="text"
-                    name="name"
-                    value={purchaseData.name}
-                    onChange={handleInputChange}
-                />
-            </div>
-            <div>
-                <label htmlFor="cost">Cost:</label>
-                <input
-                    type="text"
-                    name="cost"
-                    value={purchaseData.cost}
-                    onChange={handleInputChange}
-                />
-            </div>
-            <button>CREATE NEW PURCHASE</button>
-        </form>
+        <div class="purchase-entry-div">
+            <h2 id="new-purchase-title">CREATE NEW PURCHASE</h2>
+            <form onSubmit={handleNewPurchase}>
+                <div>
+                    <label htmlFor="name">Name:</label>
+                    <input
+                        type="text"
+                        name="name"
+                        value={purchaseData.name}
+                        onChange={handleInputChange}
+                    />
+                </div>
+                <div>
+                    <label htmlFor="cost">Cost (€):</label>
+                    <input
+                        type="text"
+                        name="cost"
+                        value={purchaseData.cost}
+                        onChange={handleInputChange}
+                    />
+                </div>
+                <button class="new-purchase-btn">CREATE NEW PURCHASE</button>
+            </form>
+        </div>
         <Footer />
     </div>
     )

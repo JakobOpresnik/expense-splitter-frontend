@@ -52,28 +52,30 @@ function GroupEntry() {
     return (
         <div>
             <Header />
-            <h2>Create New Event</h2>
-            <form onSubmit={handleNewEvent}>
-                <div>
-                    <label htmlFor="name">Name:</label>
-                    <input
-                        type="text"
-                        name="name"
-                        value={groupData.name}
-                        onChange={handleInputChange}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="people">Max number of people:</label>
-                    <input
-                        type="text"
-                        name="people"
-                        value={groupData.people}
-                        onChange={handleInputChange}
-                    />
-                </div>
-                <button>CREATE NEW EVENT</button>
-            </form>
+            <div class="group-entry-div">
+                <h2 id="new-event-title">CREATE NEW EVENT</h2>
+                <form onSubmit={handleNewEvent}>
+                    <div>
+                        <label htmlFor="name">Name:</label>
+                        <input
+                            type="text"
+                            name="name"
+                            value={groupData.name}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="people">Max number of people:</label>
+                        <input
+                            type="text"
+                            name="people"
+                            value={groupData.people}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <button class="new-event-btn">CREATE NEW EVENT</button>
+                </form>
+            </div>
             <Footer />
         </div>
     );

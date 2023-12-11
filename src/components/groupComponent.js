@@ -12,6 +12,7 @@ function Group() {
     const [groupUsers, setGroupUsers] = useState([]);
     const [joined, setJoined] = useState(isGroupJoined);
     const [totalBalance, setTotalBalance] = useState(0);
+    const [avgBalance, setAvgBalance] = useState(0);
     const [debtsList, setDebtsList] = useState([]);
     const navigate = useNavigate();
 
@@ -61,6 +62,7 @@ function Group() {
         const debts = [];
         console.log("total", totalBalance);
         const avg = totalBalance / users.length;
+        setAvgBalance(avg);
         console.log("average", avg);
 
         const allDebts = users.map(user => {
@@ -169,6 +171,52 @@ function Group() {
         }
     }
 
+    /* const removePurchase = async (purchaseId) => {
+        try {
+            const response = await fetch(`http://localhost:9000/purchases/${purchaseId}`, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+            if (response.ok) {
+                const removedPurchase = await response.json();
+                console.log("removed purchase", removedPurchase);
+                // update user's balance based on the deleted purchase
+                currentUser.balance = currentUser.balance + removedPurchase.cost;
+                console.log("successfully removed purchase");
+                console.log("new user balance after removed purchase: ", currentUser.balance);
+                const newBalanceData = {
+                    balance: currentUser.balance,
+                };
+                try {
+                    const response = await fetch(`http://localhost:9000/users/${currentUser._id}`, {
+                        method: "PUT",
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(newBalanceData),
+                    });
+                    if (response.ok) {
+                        console.log("user's balance successfully updated");
+                    }
+                    else {
+                        console.error("balance update failed");
+                    }
+                }
+                catch(error) {
+                    console.error(`call to API failed: ${error}`);
+                }
+            }
+            else {
+                console.error("failed to remove purchase");
+            }
+        }
+        catch(error) {
+            console.error(`call to API failed: ${error}`);
+        }
+    } */
+
     useEffect(() => {
         async function getGroup() {
             try {
@@ -268,53 +316,61 @@ function Group() {
     return (
         <div>
             <Header />
-            <h3>{group.name}</h3>
-            
-            { !joined ? (
-                <>
-                    <h2>Would you like to join this event?</h2>
-                    <button onClick={() => handleEventJoin(group._id)}>JOIN</button>
-                </>
-            ) : (
-                <button onClick={() => handleEventLeave(group._id)}>LEAVE</button>
-            )}
-            <h3>max people: {group.people}</h3>
-            <h3>Purchases:</h3>
-            <div class="listing">
-                { purchases.length ? 
-                    purchases.map(purchase => (
-                    <div class="purchase-info" key={purchase._id}>
-                        <h3>{purchase.name}</h3>
-                        <h4>price: {purchase.cost}€</h4>
-                        <h4>done by: {purchase.user.username}</h4>
-                    </div>
-                )) : "" }
-            </div>
-            { joined && (
-                <button onClick={handleRedirect}>ADD PURCHASE</button>
-            )}
-            <table class="debts-table">
-                <tbody>
-                    <tr>
-                        <td>member</td>
-                        <td>balance</td>
-                        <td>debt</td>
-                        {groupUsers.map(user => (
-                            <td>debt to {user.username}</td>
-                        ))}
-                    </tr>
-                    {debtsList.map((debtList, debtListIndex) => (
-                        <tr key={debtListIndex}>
-                            <td>{debtsList[debtListIndex][0].user}</td>
-                            {debtList.map((debt, debtIndex) => (
-                                <td key={debtIndex} style={{backgroundColor: debt.value !== 0 ? debt.value > 0 ? "green" : "red" : "white"}}>
-                                    {debt.value !== 0 && debtIndex > 0 ? debt.value < 0 ? `owes ${parseFloat(Math.abs(debt.value).toFixed(2))}€` : `is owed ${parseFloat(Math.abs(debt.value).toFixed(2))}€` : debtIndex === 0 ? `${parseFloat(debt.value).toFixed(2)}€` : ``}
-                                </td>
+            <div class="group-div">
+                <h3 id="group-name">{group.name}</h3>
+                { !joined ? groupUsers.length < group.people ? (
+                    <>
+                        <h2>Would you like to join this event?</h2>
+                        <button class="join-group-btn" onClick={() => handleEventJoin(group._id)}>JOIN</button>
+                    </>
+                ) : (<h2>This group is already full</h2>) : (
+                    <button class="leave-group-btn" onClick={() => handleEventLeave(group._id)}>LEAVE EVENT</button>
+                )}
+                <p style={{color: groupUsers.length >= group.people ? "red" : ""}}>{groupUsers.length} / {group.people} members</p>
+                <h2>PURCHASES:</h2>
+                <div class="listing">
+                    { purchases.length ? 
+                        purchases.map(purchase => (
+                        <div class="purchase-info" key={purchase._id}>
+                            <h3>{purchase.name}</h3>
+                            <p>price: {purchase.cost}€</p>
+                            <p>done by: {purchase.user.username}</p>
+                            { /* purchase.user.username === currentUser.username && (
+                                <button class="remove-purchase-btn" onClick={() => removePurchase(purchase._id)}>REMOVE</button>
+                            ) */}
+                        </div>
+                    )) : "" }
+                </div>
+                { joined && (
+                    <button class="add-purchase-btn" onClick={handleRedirect}>ADD PURCHASE</button>
+                )}
+                <div class="other-stats">
+                    <p>TOTAL MONEY SPENT: <b>{Math.abs(totalBalance)}€</b></p>
+                    <p>AVERAGE MONEY SPENT PER MEMBER: <b>{Math.abs(avgBalance)}€</b></p>
+                </div>
+                <table class="debts-table">
+                    <tbody>
+                        <tr>
+                            <td style={{backgroundColor: "#304cff"}}><b>member</b></td>
+                            <td style={{backgroundColor: "#304cff"}}><b>balance</b></td>
+                            <td style={{backgroundColor: "#304cff"}}><b>debt</b></td>
+                            {groupUsers.map(user => (
+                                <td style={{backgroundColor: "#304cff"}}><b>debt to {user.username}</b></td>
                             ))}
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                        {debtsList.map((debtList, debtListIndex) => (
+                            <tr key={debtListIndex}>
+                                <td style={{backgroundColor: "#304cff"}}><b>{debtsList[debtListIndex][0].user}</b></td>
+                                {debtList.map((debt, debtIndex) => (
+                                    <td key={debtIndex} style={{backgroundColor: debt.value !== 0 ? debt.value > 0 ? "rgb(0, 165, 0)" : "rgb(255, 39, 39)" : "rgb(180, 180, 180)"}}>
+                                        {debt.value !== 0 && debtIndex > 0 ? debt.value < 0 ? `owes ${parseFloat(Math.abs(debt.value).toFixed(2))}€` : `is owed ${parseFloat(Math.abs(debt.value).toFixed(2))}€` : debtIndex === 0 ? `${parseFloat(debt.value).toFixed(2)}€` : ``}
+                                    </td>
+                                ))}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
             <Footer />
         </div>
     )

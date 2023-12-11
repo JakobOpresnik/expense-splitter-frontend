@@ -6,8 +6,10 @@ import { UserContext } from "../App";
 function Home() {
 
     const { currentUser } = useContext(UserContext);
-    //console.log(currentUser.username);
- 
+    if (currentUser) {
+        console.log(currentUser.username);
+    }
+
     return (
         <>
             <Header />

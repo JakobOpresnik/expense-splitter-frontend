@@ -119,53 +119,55 @@ function Groups() {
             {!loadingGroups && currentUser && groups && (
                 <div>
                     <Header />
-                    <button onClick={handleRedirect}>ADD EVENT</button>
-                    <h2>ALL AVAILABLE EVENTS</h2>
-                    <div class="listing">
-                    {groups.map(group => {
-                        return (
-                            <div class="event-info">
-                                <h3>{group.name}</h3>
-                                <h4>max {group.people} people</h4>
-                                <button onClick={() => handleEventSelection(group._id)}>VIEW</button>
-                                {/* {joinGroup && (
-                                    <>
-                                        <button onClick={() => handleEventSelection(group._id)}>VIEW</button>
-                                        <button onClick={() => handleEventLeave(group._id)}>LEAVE</button>
-                                    </>
-                                )}
-                                {!joinGroup && (
-                                    <>
-                                        <button onClick={() => handleEventJoin(group._id)}>JOIN</button>
-                                    </>
-                                )} */}
-                            </div>
-                        )
-                    })}
-                    </div>
-                    <h2>YOUR EVENTS</h2>
-                    <div class="listing">
+                    <div class="groups-div">
+
+                        <button class="add-event-btn" onClick={handleRedirect}>ADD EVENT</button>
+                        <h2 id="title-all">ALL AVAILABLE EVENTS</h2>
+                        <div class="listing">
                         {groups.map(group => {
-                            if (group.users.includes(currentUser._id)) {
-                                return (
-                                    <div class="my-event-info">
-                                        <h3>{group.name}</h3>
-                                        <h4>max {group.people} people</h4>
-                                        {/* {joinGroup && (
-                                            <>
-                                                <button onClick={() => handleEventSelection(group._id)}>VIEW</button>
-                                                <button onClick={() => handleEventLeave(group._id)}>LEAVE</button>
-                                            </>
-                                        )}
-                                        {!joinGroup && (
-                                            <>
-                                                <button onClick={() => handleEventJoin(group._id)}>JOIN</button>
-                                            </>
-                                        )} */}
-                                    </div>
-                                )
-                            }
+                            return (
+                                <div class="event-info" onClick={() => handleEventSelection(group._id)}>
+                                    <h3>{group.name}</h3>
+                                    <h4>{group.users.length} / {group.people} people</h4>
+                                    {/* {joinGroup && (
+                                        <>
+                                            <button onClick={() => handleEventSelection(group._id)}>VIEW</button>
+                                            <button onClick={() => handleEventLeave(group._id)}>LEAVE</button>
+                                        </>
+                                    )}
+                                    {!joinGroup && (
+                                        <>
+                                            <button onClick={() => handleEventJoin(group._id)}>JOIN</button>
+                                        </>
+                                    )} */}
+                                </div>
+                            )
                         })}
+                        </div>
+                        <h2 id="title-your">YOUR EVENTS</h2>
+                        <div class="listing">
+                            {groups.map(group => {
+                                if (group.users.includes(currentUser._id)) {
+                                    return (
+                                        <div class="my-event-info">
+                                            <h3>{group.name}</h3>
+                                            <h4>max {group.people} people</h4>
+                                            {/* {joinGroup && (
+                                                <>
+                                                    <button onClick={() => handleEventSelection(group._id)}>VIEW</button>
+                                                    <button onClick={() => handleEventLeave(group._id)}>LEAVE</button>
+                                                </>
+                                            )}
+                                            {!joinGroup && (
+                                                <>
+                                                    <button onClick={() => handleEventJoin(group._id)}>JOIN</button>
+                                                </>
+                                            )} */}
+                                        </div>
+                                    )
+                                }
+                            })}
+                        </div>
                     </div>
                     <Footer />
                 </div>
